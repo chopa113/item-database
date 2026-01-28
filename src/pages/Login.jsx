@@ -4,7 +4,7 @@ function Login({ setIsLogged }) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
 
-  const SECRET_PASS = import.meta.env.VITE_APP_PASSWORD || 'tajnehaslo'
+  const SECRET_PASS = import.meta.env.VITE_APP_PASSWORD
 
   const login = (e) => {
     e.preventDefault()
