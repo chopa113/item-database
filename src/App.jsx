@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import './App.css';
 
 /* =======================
    DANE – STYLISTYKA
@@ -233,14 +234,14 @@ export default function App() {
   function answer(term) {
     if (locked) return;
 
-    setLocked(true);
     setSelected(term);
 
     if (term === question.correct) {
       setScore(s => s + 1);
+      setTimeout(next, 500);
+    } else {
+      setLocked(true);
     }
-
-    setTimeout(next, 500);
   }
 
   if (!question) return null;
@@ -277,6 +278,12 @@ export default function App() {
             {o.term}
           </button>
         ))}
+
+        {locked && (
+          <button onClick={next} style={styles.btn} style={{ ...styles.btn, background: "#3b82f6", color: "white" }}>
+            Dalej
+          </button>
+        )}
 
         <div style={{ marginTop: 10 }}>
           Wynik: {score}
