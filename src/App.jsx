@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /* =======================
-   STYLISTYKA
+   DANE – STYLISTYKA
 ======================= */
 const stylistyka = [
   { term: "Epitet", def: "Określenie rzeczownika uwydatniające jego cechy." },
@@ -26,18 +26,124 @@ const stylistyka = [
   { term: "Zgrubienie", def: "Formy pogardliwe." },
   { term: "Neologizm", def: "Nowe słowo." },
   { term: "Archaizm", def: "Słowo przestarzałe." },
-  { term: "Zapożyczenie", def: "Słowo z obcego języka." },
   { term: "Onomatopeja", def: "Dźwiękonaśladowcze słowo." },
-  { term: "Instrumentacja głoskowa", def: "Efekt brzmieniowy głosek." },
   { term: "Hiperbola", def: "Przesada." },
-  { term: "Paradoks", def: "Sprzeczne stwierdzenie." },
-  { term: "Pytanie retoryczne", def: "Bez odpowiedzi." },
-  { term: "Wykrzyknienie", def: "Emocjonalne zdanie." },
-  { term: "Synonim", def: "Wyraz bliskoznaczny." },
-  { term: "Antonim", def: "Przeciwieństwo." },
-  { term: "Homonim", def: "To samo brzmienie, inne znaczenie." },
   { term: "Symbol", def: "Wiele znaczeń przenośnych." },
   { term: "Alegoria", def: "Jeden stały sens przenośny." }
+];
+
+/* =======================
+   EPOKI
+======================= */
+const epoki = [
+  /* =======================
+     ANTYK
+  ======================= */
+  { term: "Klasycyzm", def: "Wzorzec doskonałości i harmonii." },
+  { term: "Antyk", def: "Kultura Grecji i Rzymu." },
+  { term: "Cnota", def: "Dobro, piękno i prawda (Platon)." },
+  { term: "Epikureizm", def: "Szczęście przez przyjemność i brak bólu." },
+  { term: "Stoicyzm", def: "Spokój i opanowanie emocji." },
+  { term: "Hedonizm", def: "Dążenie do przyjemności." },
+  { term: "Sceptycyzm", def: "Wątpienie w poznanie prawdy." },
+  { term: "Sofiści", def: "Relatywizm prawdy." },
+  { term: "Cynizm", def: "Odrzucenie norm społecznych." },
+  { term: "Katharsis", def: "Oczyszczenie emocjonalne." },
+  { term: "Mimesis", def: "Naśladowanie rzeczywistości." },
+  { term: "Fatum", def: "Nieuchronny los." },
+  { term: "Decorum", def: "Dostosowanie stylu do treści." },
+
+  /* =======================
+     BIBLIA
+  ======================= */
+  { term: "Monoteizm", def: "Wiara w jednego Boga." },
+  { term: "Politeizm", def: "Wiara w wielu bogów." },
+  { term: "Przypowieść", def: "Utwór z ukrytym sensem." },
+  { term: "Hiobowa wieść", def: "Bardzo zła wiadomość." },
+  { term: "Vanitas", def: "Przemijanie życia." },
+  { term: "Biblicyzm", def: "Związki frazeologiczne z Biblii." },
+
+  /* =======================
+     ŚREDNIOWIECZE
+  ======================= */
+  { term: "Sacrum", def: "Sfera święta." },
+  { term: "Profanum", def: "Sfera świecka." },
+  { term: "Memento mori", def: "Pamiętaj o śmierci." },
+  { term: "Ars moriendi", def: "Sztuka umierania." },
+  { term: "Teocentryzm", def: "Bóg w centrum świata." },
+  { term: "Dydaktyzm", def: "Nauczanie moralne." },
+  { term: "Alegoryczność", def: "Ukryte znaczenie." },
+  { term: "Pareneza", def: "Wzorce moralne." },
+  { term: "Stabat Mater", def: "Motyw cierpienia Matki Boskiej." },
+  { term: "Danse macabre", def: "Taniec śmierci." },
+
+  /* =======================
+     RENESANS
+  ======================= */
+  { term: "Renesans", def: "Odrodzenie kultury antycznej." },
+  { term: "Humanizm", def: "Człowiek w centrum zainteresowania." },
+  { term: "Antropocentryzm", def: "Człowiek najważniejszy." },
+  { term: "Mecenat", def: "Finansowanie artystów." },
+  { term: "Theatrum mundi", def: "Świat jako scena." },
+  { term: "Tren", def: "Utwór żałobny." },
+
+  /* =======================
+     BAROK
+  ======================= */
+  { term: "Kontrreformacja", def: "Ruch Kościoła przeciw reformacji." },
+  { term: "Sarmatyzm", def: "Ideologia polskiej szlachty." },
+
+  /* =======================
+     OŚWIECENIE
+  ======================= */
+  { term: "Racjonalizm", def: "Rozum jako źródło wiedzy." },
+  { term: "Empiryzm", def: "Doświadczenie jako źródło wiedzy." },
+  { term: "Deizm", def: "Bóg stworzył świat, ale nie ingeruje." },
+  { term: "Ateizm", def: "Brak wiary w Boga." },
+  { term: "Utylitaryzm", def: "Największa korzyść społeczna." },
+  { term: "Wiek rozumu", def: "Epoka racjonalnego myślenia." },
+
+  /* =======================
+     ROMANTYZM
+  ======================= */
+  { term: "Bohater werteryczny", def: "Emocjonalny, nieszczęśliwy kochanek." },
+  { term: "Bohater romantyczny", def: "Indywidualista, buntownik." },
+  { term: "Winkelriedyzm", def: "Poświęcenie dla narodu." },
+  { term: "Mesjanizm", def: "Polska jako mesjasz narodów." },
+  { term: "Orientalizm", def: "Zainteresowanie kulturą Wschodu." },
+  { term: "Gottizm", def: "Nawiązanie do średniowiecza." },
+
+  /* =======================
+     POZYTYWIZM
+  ======================= */
+  { term: "Praca u podstaw", def: "Pomoc najniższym warstwom." },
+  { term: "Praca organiczna", def: "Naród jako organizm." },
+  { term: "Asymilacja", def: "Włączenie mniejszości do społeczeństwa." },
+  { term: "Emancypacja kobiet", def: "Równość kobiet." },
+  { term: "Scjentyzm", def: "Nauka jako podstawa wiedzy." },
+  { term: "Realizm", def: "Przedstawienie rzeczywistości." },
+
+  /* =======================
+     MŁODA POLSKA
+  ======================= */
+  { term: "Dekadentyzm", def: "Kryzys wartości i pesymizm." },
+  { term: "Naturalizm", def: "Realistyczne, brutalne przedstawienie świata." },
+  { term: "Katastrofizm", def: "Przekonanie o upadku cywilizacji." },
+
+  /* =======================
+     DWUDZIESTOLECIE
+  ======================= */
+  { term: "Ekspresjonizm", def: "Ekspresja emocji." },
+  { term: "Surrealizm", def: "Podświadomość i sen." },
+  { term: "Futuryzm", def: "Kult nowoczesności." },
+  { term: "Awangarda", def: "Nowatorskie formy sztuki." },
+
+  /* =======================
+     WOJNA I OKUPACJA
+  ======================= */
+  { term: "Dehumanizacja", def: "Odebranie człowieczeństwa." },
+  { term: "Patos", def: "Podniosłość stylu." },
+  { term: "Demitologizacja", def: "Obalenie mitów bohaterstwa." }
 ];
 
 /* =======================
@@ -60,12 +166,12 @@ const wesele = [
 ];
 
 /* =======================
-   UNIQUE RANDOM (BRAK POWTÓREK)
+   PICKER (bez resetu przy renderze)
 ======================= */
-function createUniquePicker(data) {
+function createPicker(data) {
   let used = new Set();
 
-  return function pick() {
+  return () => {
     if (used.size === data.length) used.clear();
 
     let item;
@@ -88,47 +194,53 @@ export default function App() {
   const [locked, setLocked] = useState(false);
   const [score, setScore] = useState(0);
 
-  const data = mode === "wesele" ? wesele : stylistyka;
+  const data =
+    mode === "wesele"
+      ? wesele
+      : mode === "epoki"
+      ? epoki
+      : stylistyka;
 
-  const pick = createUniquePicker(data);
+  const pickerRef = useRef(null);
 
-  function generate() {
+  useEffect(() => {
+    pickerRef.current = createPicker(data);
+    next();
+    setScore(0);
+  }, [mode]);
+
+  function next() {
+    const pick = pickerRef.current;
     const correct = pick();
 
     const options = [correct];
+
     while (options.length < 4) {
       const r = data[Math.floor(Math.random() * data.length)];
-      if (!options.includes(r)) options.push(r);
+      if (!options.find(o => o.term === r.term)) options.push(r);
     }
 
-    return {
+    setQuestion({
       def: correct.def,
       correct: correct.term,
       options: options.sort(() => Math.random() - 0.5)
-    };
-  }
+    });
 
-  useEffect(() => {
-    setQuestion(generate());
     setSelected(null);
     setLocked(false);
-  }, [mode]);
+  }
 
-  function answer(opt) {
+  function answer(term) {
     if (locked) return;
 
     setLocked(true);
-    setSelected(opt);
+    setSelected(term);
 
-    if (opt === question.correct) {
+    if (term === question.correct) {
       setScore(s => s + 1);
     }
 
-    setTimeout(() => {
-      setQuestion(generate());
-      setSelected(null);
-      setLocked(false);
-    }, 600);
+    setTimeout(next, 500);
   }
 
   if (!question) return null;
@@ -137,16 +249,16 @@ export default function App() {
     <div style={styles.page}>
       <div style={styles.card}>
 
-        <h2>📚 Fiszki + Wesele</h2>
+        <h2>📚 Fiszki Matura</h2>
 
         <div style={styles.nav}>
           <button onClick={() => setMode("stylistyka")}>Stylistyka</button>
+          <button onClick={() => setMode("epoki")}>Epoki</button>
           <button onClick={() => setMode("wesele")}>Wesele</button>
+          <button onClick={() => setScore(0)}>Reset</button>
         </div>
 
-        <div style={styles.flash}>
-          {question.def}
-        </div>
+        <div style={styles.flash}>{question.def}</div>
 
         {question.options.map((o, i) => (
           <button
@@ -176,7 +288,7 @@ export default function App() {
 }
 
 /* =======================
-   STYLES
+   STYLE
 ======================= */
 const styles = {
   page: {
@@ -195,12 +307,13 @@ const styles = {
   },
   nav: {
     display: "flex",
-    justifyContent: "space-between",
-    gap: 10,
+    flexWrap: "wrap",
+    gap: 8,
+    justifyContent: "center",
     marginBottom: 15
   },
   flash: {
-    padding: 30,
+    padding: 20,
     background: "#eef2ff",
     borderRadius: 12,
     fontWeight: "bold",
